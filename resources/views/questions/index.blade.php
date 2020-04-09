@@ -20,10 +20,10 @@
                        <div class="media">
                            <div class="d-flex flex-column counters">
                                <div class="vote">
-                                   <strong>{{$question->votes}}</strong> {{str_plural('vote',$question->votes)}}
+                                   <strong>{{$question->votes_count}}</strong> {{str_plural('vote',$question->votes_count)}}
                                </div>
                                <div class="status {{$question->status}}">
-                                   <strong>{{$question->answers}}</strong> {{str_plural('answer',$question->answers)}}
+                                   <strong>{{$question->answers_count}}</strong> {{str_plural('answer',$question->answers_count)}}
                                </div>
                                <div class="view">
                                    {{$question->views .' '.str_plural('view',$question->views)}}
@@ -32,14 +32,18 @@
                            <div class="media-body">
                                <div class="d-flex align-items-center">
                                    <h4 class="mt-0"><a href="{{$question->url_slug}}">{{$question->title}}</a></h3>
-                                   <div class="ml-auto">
+                                   @can('update',$question)
+                                    <div class="ml-auto">
                                        <a href="{{route('questions.edit',$question->id)}}" class="btn btn-sm btn-outline-info">Edit</a>
-                                       <form class="d-inline" action="{{route('questions.destroy',$question->id)}}" method="post">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure to delete this ?')">Delete</button>
-                                        </form>
+                                       @can('delete',$question)
+                                            <form class="d-inline" action="{{route('questions.destroy',$question->id)}}" method="post">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure to delete this ?')">Delete</button>
+                                            </form>
+                                        @endcan
                                    </div>
+                                   @endcan
                                 </div>
                                    <p class="lead">
                                        <h5 class="mt-0">Asked by <a href="{{$question->user->url}}">{{$question->user->name}}</a> <small class="text-black-50">{{$question->created_date}}</small> </h5>
